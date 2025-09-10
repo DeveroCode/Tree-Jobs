@@ -1,0 +1,82 @@
+import api from "@/lib/axios";
+import { dashboardWorksSchema, SavedJobSchema, type Message, type Work, type WorkRegistrationForm } from "../types";
+import { isAxiosError } from "axios";
+
+export async function addWork(formData: WorkRegistrationForm) {
+    try {
+        const { data } = await api.post('/work/create', formData);
+        return data.message;
+    } catch (error) {
+        if (isAxiosError(error)) {
+            return error.response?.data.message;
+        }
+    }
+}
+
+export async function getWorks() {
+    try {
+        const url = '/work';
+        const { data } = await api(url);
+        const response = dashboardWorksSchema.safeParse(data.works);
+        if (response.success) {
+            return response.data;
+        }
+    } catch (error) {
+        if (isAxiosError(error)) {
+            return error.response?.data.message;
+        }
+    }
+}
+
+export async function getProyectById(workId : Work['_id']) {
+    try {
+        const { data } = await api(`/work/${workId}`);
+        return data.work;
+    } catch (error) {
+        if (isAxiosError(error)) {
+            return error.response?.data.message;
+        }
+    }
+}
+
+type WorkAPIType = {
+    formData: WorkRegistrationForm,
+    workId : Work['_id']
+}
+
+export async function updateWork({formData, workId} : WorkAPIType) {
+    try {
+        const { data } = await api.put(`/work/${workId}/update`, formData);
+        return data.message;
+    } catch (error) {
+        if (isAxiosError(error)) {
+            return error.response?.data.message;
+        }
+    }
+}
+
+export async function updateWorkEnabled({ workId} : {workId : Work['_id']}) {
+    try {
+        const { data } = await api.put<Message>(`/work/update/${workId}`);
+        return data.message;
+    } catch (error) {
+        if (isAxiosError(error)) {
+            return error.response?.data.message;
+        }
+    }
+}
+
+export async function getAllSavedJobs(){
+    try {
+        const { data } = await api('/work/candidate/getSavedJobs');
+        const response = SavedJobSchema.safeParse(data.jobs);
+        if (response.success) {
+            console.log(response);
+            return response.data;
+        }
+    } catch (error) {
+        if (isAxiosError(error)) {
+            return error.response?.data.message;
+        }
+    }
+}
