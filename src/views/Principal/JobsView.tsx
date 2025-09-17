@@ -14,7 +14,7 @@ export default function JobsView() {
 
   const { data, isLoading, isError } = useQuery<JobsCardData>({
     queryFn: getPostulationsWorks,
-    queryKey: ["postulationsWorks"],
+    queryKey: ["works"],
     refetchOnWindowFocus: false,
     retry: false,
   });
