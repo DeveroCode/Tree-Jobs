@@ -1,12 +1,12 @@
 import api from "@/lib/axios";
 import type { ChatMessage, EmailApplication, Message, Postulation, SMS, updateStatusForm, User, Work } from "../types";
-import { ApplicationDataSchema, CandidateSchema, JobSchema, notificationSchema, postulationsSchema } from "../types";
+import { ApplicationDataSchema, CandidateSchema, JobPaginateSchema, notificationSchema, postulationsSchema } from "../types";
 import { isAxiosError } from "axios";
 
 export async function getPostulationsWorks() {
     try {
         const { data } = await api('/work/postulations/works');
-        const response = JobSchema.safeParse(data.works);
+        const response = JobPaginateSchema.safeParse(data);
         if (response.success) {
             return response.data;
         }
@@ -29,12 +29,12 @@ export async function postulateToWork(formData: Postulation) {
     }
 }
 
-export async function saveJobs(workId: Work['_id']){
+export async function saveJobs(workId: Work['_id']) {
     try {
         const { data } = await api.post<Message>(`/work/candidate/save-job/${workId}`);
         return data.message;
     } catch (error) {
-          if (isAxiosError(error)) {
+        if (isAxiosError(error)) {
             throw new Error(error.response?.data?.message);
         }
     }

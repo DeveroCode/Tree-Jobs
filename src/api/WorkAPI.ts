@@ -1,5 +1,6 @@
 import api from "@/lib/axios";
-import { dashboardWorksSchema, SavedJobSchema, type Message, type Work, type WorkRegistrationForm } from "../types";
+import { dashboardWorksSchema, JobPaginateSchema, SavedJobSchema } from "../types";
+import type { Filters, Message, Work, WorkRegistrationForm } from '../types';
 import { isAxiosError } from "axios";
 
 export async function addWork(formData: WorkRegistrationForm) {
@@ -28,7 +29,7 @@ export async function getWorks() {
     }
 }
 
-export async function getProyectById(workId : Work['_id']) {
+export async function getProyectById(workId: Work['_id']) {
     try {
         const { data } = await api(`/work/${workId}`);
         return data.work;
@@ -41,10 +42,10 @@ export async function getProyectById(workId : Work['_id']) {
 
 type WorkAPIType = {
     formData: WorkRegistrationForm,
-    workId : Work['_id']
+    workId: Work['_id']
 }
 
-export async function updateWork({formData, workId} : WorkAPIType) {
+export async function updateWork({ formData, workId }: WorkAPIType) {
     try {
         const { data } = await api.put(`/work/${workId}/update`, formData);
         return data.message;
@@ -55,7 +56,7 @@ export async function updateWork({formData, workId} : WorkAPIType) {
     }
 }
 
-export async function updateWorkEnabled({ workId} : {workId : Work['_id']}) {
+export async function updateWorkEnabled({ workId }: { workId: Work['_id'] }) {
     try {
         const { data } = await api.put<Message>(`/work/update/${workId}`);
         return data.message;
@@ -66,7 +67,7 @@ export async function updateWorkEnabled({ workId} : {workId : Work['_id']}) {
     }
 }
 
-export async function getAllSavedJobs(){
+export async function getAllSavedJobs() {
     try {
         const { data } = await api('/work/candidate/getSavedJobs');
         const response = SavedJobSchema.safeParse(data.jobs);
@@ -76,6 +77,29 @@ export async function getAllSavedJobs(){
         }
     } catch (error) {
         if (isAxiosError(error)) {
+            return error.response?.data.message;
+        }
+    }
+}
+
+export type WorkFilterParams = {
+    title?: Filters['title'];
+    location?: Filters['location'];
+}
+export async function workFilter({ title, location }: WorkFilterParams) {
+    try {
+        const { data } = await api('/work/filters', { params: { title, location } });
+        const response = JobPaginateSchema.safeParse(data);
+        console.log(response)
+        if (response.success) {
+            return response.data;
+        } else {
+            console.error(response.error);
+            return null;
+        }
+    } catch (error) {
+        if (isAxiosError(error)) {
+            console.log(error);
             return error.response?.data.message;
         }
     }
