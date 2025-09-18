@@ -1,40 +1,15 @@
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { BanknotesIcon, MapPinIcon } from "@heroicons/react/24/outline";
 import type { WorkFilterParams } from "@/api/workAPI";
-import { useForm } from "react-hook-form";
+import { type UseFormHandleSubmit, type UseFormRegister } from "react-hook-form";
 import { Search } from "lucide-react";
-import { toast } from "react-toastify";
-import { useEffect } from "react";
-export default function Categorie() {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const params = new URLSearchParams(location.search);
-  const { register, handleSubmit, watch, setValue } = useForm<WorkFilterParams>(
-    {
-      defaultValues: {
-        title: "",
-      },
-    }
-  );
 
-  const title = watch("title");
-  const titleString = params.get("title") || "";
-
-  useEffect(() => {
-    if (titleString) {
-      setValue("title", titleString);
-    }
-  }, [titleString, setValue]);
-
-  const handleSendToFindJobs = () => {
-    if (!title) {
-      toast.error("Please enter a job title or a company");
-      return;
-    }
-
-    navigate(`/tree-jobs/jobs?title=${title}`);
-  };
-
+export type CategorieProps = {
+  handleSendToFindJobs: () => void;
+  handleSubmit: UseFormHandleSubmit<WorkFilterParams, WorkFilterParams>;
+  register: UseFormRegister<WorkFilterParams>;
+}
+export default function Categorie({handleSendToFindJobs, handleSubmit, register}: CategorieProps) {
   return (
     <section className="bg-white border-t border-gray-200 px-32 py-6 md:flex gap-5 items-center justify-between hidden">
       <div className="flex items-center gap-10">
