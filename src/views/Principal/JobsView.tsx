@@ -2,19 +2,28 @@ import { getPostulationsWorks } from "@/api/UserWorkAPI";
 import WorkCard from "@/components/Principal/WorkCard";
 import type { JobCardData, JobsCardData } from "@/types/index";
 import { useQuery } from "@tanstack/react-query";
-import { Navigate } from "react-router-dom";
+import { Navigate, useSearchParams } from "react-router-dom";
 import AsideFilters from "./AsideFilters";
 import HeaderJobs from "@/components/Principal/HeaderJobs";
 import ModalPostulation from "../../components/Modals/ModalPostulation";
 import { useState } from "react";
+import { workFilter } from "@/api/workAPI";
 
 export default function JobsView() {
   const [isOpen, setIsOpen] = useState(false);
   const [job, setJob] = useState<JobCardData | null>(null);
+  const [searchParams] = useSearchParams();
+  const title = searchParams.get("title") || "";
+  const location = searchParams.get("location") || "";
+
+  const isFiltering = Boolean(title || location);
 
   const { data, isLoading, isError } = useQuery<JobsCardData>({
-    queryFn: getPostulationsWorks,
-    queryKey: ["works"],
+    queryFn: () =>
+      isFiltering
+        ? workFilter({ title, location })
+        : getPostulationsWorks(),
+    queryKey: ["works", { title, location }],
     refetchOnWindowFocus: false,
     retry: false,
   });
@@ -23,6 +32,7 @@ export default function JobsView() {
 
   if (isLoading) return <span>Cargando...</span>;
   if (isError) return <Navigate to={"/"} />;
+  const jobs = data?.works;
 
   if (data)
     return (
@@ -41,7 +51,7 @@ export default function JobsView() {
                 Recommended jobs
               </h2>
               <div className="flex flex-wrap justify-center md:justify-start gap-5">
-                {data.map((work) => (
+                {jobs!.map((work) => (
                   <WorkCard
                     key={work._id}
                     work={work}
