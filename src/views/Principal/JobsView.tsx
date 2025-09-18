@@ -12,6 +12,7 @@ import { workFilter } from "@/api/workAPI";
 export default function JobsView() {
   const [isOpen, setIsOpen] = useState(false);
   const [job, setJob] = useState<JobCardData | null>(null);
+
   const [searchParams] = useSearchParams();
   const title = searchParams.get("title") || "";
   const location = searchParams.get("location") || "";

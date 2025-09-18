@@ -28,8 +28,13 @@ export default function HeaderJobs() {
   }, [titleString, setValue]);
 
   const handleSendToFindJobs = () => {
-    if (!title) {
-      toast.error("Please enter a job title or a company");
+    const search = title!.trim();
+    if (!search) {
+      if (!params.get("title")) {
+        toast.info("Please enter a job title to search.");
+        return;
+      };
+      navigate(`/tree-jobs/jobs`);
       return;
     }
 
@@ -41,7 +46,8 @@ export default function HeaderJobs() {
         handleSendToFindJobs={handleSendToFindJobs}
         handleSubmit={handleSubmit}
         register={register}
-        watch={watch} setValue={setValue}
+        watch={watch}
+        setValue={setValue}
       />
       <Categorie
         handleSendToFindJobs={handleSendToFindJobs}
