@@ -33,7 +33,7 @@ export default function WorkCard({
     mutationFn: saveJobs,
     onSuccess: (data) => {
       toast.success(data);
-      queryClient.invalidateQueries({ queryKey: ["postulationsWorks"] });
+      queryClient.invalidateQueries({ queryKey: ["works"] });
       setSaved((prev) => !prev);
     },
     onError: (error) => {
