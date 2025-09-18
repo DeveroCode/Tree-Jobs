@@ -41,6 +41,7 @@ export default function HeaderJobs() {
         handleSendToFindJobs={handleSendToFindJobs}
         handleSubmit={handleSubmit}
         register={register}
+        watch={watch} setValue={setValue}
       />
       <Categorie
         handleSendToFindJobs={handleSendToFindJobs}
