@@ -24,6 +24,8 @@ export default function MainView() {
     retry: false,
   });
 
+  const {works = []} = data || {};
+
   const totalWorks = data?.length || 0;
   const sliderRef = useRef<HTMLDivElement | null>(null);
 
@@ -319,12 +321,12 @@ export default function MainView() {
           <span className="text-purple-700">Featured</span> job circulars
         </h5>
 
-        {data.length > 0 ? (
+        {works.length > 0 ? (
           <div
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-12"
             ref={jobsRef}
           >
-            {data.map((job: JobCardData) => (
+            {works.map((job: JobCardData) => (
               <WorkCard key={job._id} work={job} />
             ))}
           </div>
