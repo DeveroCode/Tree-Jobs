@@ -24,9 +24,9 @@ export default function MainView() {
     retry: false,
   });
 
-  const {works = []} = data || {};
+  const { works = [] } = data || {};
 
-  const totalWorks = data?.length || 0;
+  const totalWorks = works?.length || 0;
   const sliderRef = useRef<HTMLDivElement | null>(null);
 
   // Animations refs
