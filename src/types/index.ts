@@ -102,7 +102,14 @@ export const JobSchema = z.array(
     })
 );
 
-export type JobsCardData = z.infer<typeof JobSchema>;
+export const JobPaginateSchema = z.object({
+    works: JobSchema,
+    currentPage: z.number(),
+    total: z.number(),
+    totalPages: z.number(),
+});
+
+export type JobsCardData = z.infer<typeof JobPaginateSchema>;
 export type JobCardData = z.infer<typeof JobSchema>[number]
 
 export const postulationSchema = z.object({
@@ -233,3 +240,10 @@ export const notificationSchema = z.array(z.object({
 }));
 
 export type Notification = z.infer<typeof notificationSchema>;
+
+// Filters
+export type Filters = {
+    location: string;
+    salary: string;
+    title: string;
+}
